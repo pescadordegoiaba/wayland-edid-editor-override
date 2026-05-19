@@ -302,3 +302,106 @@ imagem piscando
 cd ~/MONITOR
 sudo python3 edid_live_override.py --connector HDMI-A-2 --add '869x723:75;1024x1024:60' --clean-cta
 ```
+
+### GUI VERSION
+================================================================================================
+
+
+
+# EDID Live Override GUI
+
+Interface gráfica em Python/Tkinter para controlar o script `edid_live_override.py`.
+
+Ela não grava EDID no monitor físico. Ela usa o mesmo override runtime via debugfs que já funcionou no seu sistema.
+
+## Requisitos no Manjaro/Arch
+
+```bash
+sudo pacman -S python tk xorg-xrandr polkit
+```
+
+O `polkit`/`pkexec` é usado para pedir senha gráfica quando a GUI precisa aplicar ou resetar o EDID.
+
+## Como usar direto
+
+Coloque os dois scripts na mesma pasta:
+
+```bash
+cd ~/MONITOR
+cp ~/Downloads/edid_live_gui.py .
+# edid_live_override.py já deve estar nessa pasta também
+chmod +x edid_live_gui.py
+python3 edid_live_gui.py
+```
+
+Na GUI:
+
+1. Confirme que o backend aponta para `~/MONITOR/edid_live_override.py`.
+2. Selecione `HDMI-A-2 [connected]`.
+3. Em resoluções, coloque por exemplo:
+
+```text
+869x723:75;1024x1024:60
+```
+
+4. Deixe marcado `Limpar CTA/HDMI falso`.
+5. Clique em `Aplicar EDID runtime`.
+6. Use `Aplicar modo` para testar com `xrandr`.
+
+## Instalar atalho no KDE
+
+```bash
+cd ~/MONITOR
+cp ~/Downloads/edid_live_gui.py .
+cp ~/Downloads/install_edid_gui.py .
+python3 install_edid_gui.py
+```
+
+Depois procure no menu por:
+
+```text
+EDID Live Override GUI
+```
+
+Ou rode:
+
+```bash
+~/.local/bin/edid-live-gui
+```
+
+## Exemplos úteis
+
+Adicionar modos:
+
+```text
+869x723:75;1024x1024:60
+```
+
+Adicionar tentando 60 e 75 Hz quando não especificar `:Hz`:
+
+```text
+900x720
+```
+
+Rotacionar monitor em pé sem forçar modo impossível:
+
+```text
+Rotação: left
+```
+
+Simular resolução virtual:
+
+```text
+Scale-from: 900x1280
+```
+
+## Observação
+
+Se o modo não aparecer depois de aplicar EDID runtime, tente:
+
+```bash
+xrandr
+```
+
+ou replugue o cabo HDMI/VGA. O override some após reboot.
+
